@@ -1,0 +1,5 @@
+ultralytics>=8.2.0
+kaggle>=1.6.0
+opencv-python>=4.9.0
+tqdm>=4.66.0
+PyYAML>=6.0

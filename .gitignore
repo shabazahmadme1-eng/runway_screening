@@ -3,3 +3,21 @@
 *.MP4
 *.zip
 source/
+
+# data & artifacts — never commit imagery or weights (frames/ is the
+# deliberately tracked exception)
+data/
+datasets/
+raw/
+runs/
+*.pt
+*.onnx
+*.engine
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# secrets
+kaggle.json
