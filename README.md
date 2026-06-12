@@ -54,11 +54,15 @@ python src/merge_datasets.py \
     --out datasets/master
 
 # 3. bootstrap: quick-train a nano on the RDD portion, then pseudo-label
-python src/train.py --model yolov8n.pt --data datasets/master/data.yaml --epochs 25 --name nano_bootstrap
+python src/train.py --model yolov8n.pt --data datasets/master/data.yaml \
+    --epochs 30 --imgsz 640 --batch 16 --name nano_bootstrap
 python src/bootstrap_labels.py \
     --weights runs/detect/nano_bootstrap/weights/best.pt \
     --frames datasets/master/staging/drone_frames \
     --conf 0.10
+
+# 3b. visual sanity check of the pseudo-labels (writes annotated previews)
+python src/preview_labels.py --frames frames --labels pseudo_labels --out previews
 
 # 4. refine in CVAT/Roboflow, export YOLO labels, then re-merge
 python src/merge_datasets.py \
@@ -79,6 +83,18 @@ datasets/master/
 ├── labels/{train,val}/      # YOLO txt labels
 └── staging/drone_frames/    # unlabelled drone frames awaiting pseudo-labels
 ```
+
+## Hardware notes (6 GB VRAM class GPUs, e.g. RTX 3050 Laptop)
+
+- **Nano bootstrap**: train at `--imgsz 640 --batch 16`. RDD2022 images are
+  small; 640 is the standard for that dataset and fits comfortably in 6 GB.
+- **Pseudo-label inference** still runs at `--imgsz 1280` (inference is far
+  lighter than training, and the drone frames need the resolution).
+- **Production YOLOv8m**: 1280 training does not fit in 6 GB. Use
+  `--imgsz 960 --batch -1` (auto) and expect small batches — ultralytics
+  accumulates gradients to a nominal batch of 64 internally, so small
+  batches stay stable. For full 1280 training rent a single A10/T4-class
+  cloud GPU or use Colab Pro.
 
 ## Notes
 
