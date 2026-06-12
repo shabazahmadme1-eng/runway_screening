@@ -11,8 +11,17 @@ from pathlib import Path
 
 import cv2
 
-CLASS_NAMES = {0: "crack", 1: "spalling", 2: "fod"}
-CLASS_COLORS = {0: (0, 0, 255), 1: (0, 165, 255), 2: (255, 0, 0)}  # BGR
+CLASS_NAMES = {
+    0: "crack", 1: "spalling", 2: "fod", 3: "faded_paint_marking",
+    4: "band_joint", 5: "gap_vegetation", 6: "aged_surface",
+    7: "repair_patch", 8: "weathered_surface", 9: "surface_discoloration",
+    10: "paint_marking", 11: "faded_surface_marking",
+}
+CLASS_COLORS = {  # BGR
+    0: (0, 0, 255), 1: (0, 165, 255), 2: (255, 0, 0), 3: (0, 255, 255),
+    4: (255, 255, 0), 5: (0, 200, 0), 6: (128, 0, 128), 7: (255, 0, 255),
+    8: (0, 128, 255), 9: (128, 255, 0), 10: (255, 128, 128), 11: (0, 255, 128),
+}
 IMG_EXTS = {".jpg", ".jpeg", ".png"}
 
 

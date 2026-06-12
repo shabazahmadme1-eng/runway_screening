@@ -6,10 +6,20 @@ XML annotations to YOLO format under the runway class schema, and merges
 the result with the local drone frames into a single master YOLO training
 directory.
 
-Class schema:
-    0 crack     <- RDD2022 D00 (longitudinal), D10 (transverse), D20 (alligator)
-    1 spalling  <- RDD2022 D40 (pothole, closest structural proxy)
-    2 fod       <- drone data only (no RDD2022 equivalent)
+Class schema (0-2 from the original spec, 3-11 from the client annotation
+Q&A — see docs/annotation_guide.md):
+    0  crack                 <- RDD2022 D00/D10/D20 + drone
+    1  spalling              <- RDD2022 D40 (pothole proxy) + drone
+    2  fod                   <- drone only
+    3  faded_paint_marking   <- RDD2022 D43/D44 (blurred markings) + drone
+    4  band_joint            <- drone only
+    5  gap_vegetation        <- drone only
+    6  aged_surface          <- drone only
+    7  repair_patch          <- RDD2022 "Repair" + drone
+    8  weathered_surface     <- drone only
+    9  surface_discoloration <- drone only
+    10 paint_marking         <- drone only
+    11 faded_surface_marking <- drone only
 
 Drone frames without labels are staged under <out>/staging/drone_frames for
 the pseudo-labelling step; once labels are verified, re-run with
@@ -25,15 +35,31 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-CLASS_NAMES = ["crack", "spalling", "fod"]
+CLASS_NAMES = [
+    "crack",
+    "spalling",
+    "fod",
+    "faded_paint_marking",
+    "band_joint",
+    "gap_vegetation",
+    "aged_surface",
+    "repair_patch",
+    "weathered_surface",
+    "surface_discoloration",
+    "paint_marking",
+    "faded_surface_marking",
+]
 
-# RDD2022 damage code -> runway class id. Unlisted codes (D43 crosswalk
-# blur, D44 lane-line blur, D50 manhole, "Repair", ...) are dropped.
+# RDD2022 damage code -> runway class id. Unlisted codes (D50 manhole,
+# "Block crack", ...) are dropped.
 RDD_CLASS_MAP = {
     "D00": 0,
     "D10": 0,
     "D20": 0,
     "D40": 1,
+    "D43": 3,
+    "D44": 3,
+    "Repair": 7,
 }
 
 IMG_EXTS = {".jpg", ".jpeg", ".png"}

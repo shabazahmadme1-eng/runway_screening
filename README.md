@@ -6,11 +6,24 @@ high-resolution drone imagery (1.25 mm GSD, frames extracted at 5 FPS).
 
 ## Class schema
 
-| id | name     | source                                              |
-|----|----------|-----------------------------------------------------|
-| 0  | crack    | RDD2022 D00 / D10 / D20 + verified drone labels     |
-| 1  | spalling | RDD2022 D40 (potholes ≈ spalling proxy) + drone     |
-| 2  | fod      | drone pseudo-labels only (no RDD2022 equivalent)    |
+Classes 0–2 are the original spec; 3–11 come from the client annotation
+Q&A (see [docs/annotation_guide.md](docs/annotation_guide.md) for when to
+use each).
+
+| id | name                  | source                                          |
+|----|-----------------------|-------------------------------------------------|
+| 0  | crack                 | RDD2022 D00 / D10 / D20 + verified drone labels |
+| 1  | spalling              | RDD2022 D40 (potholes ≈ spalling proxy) + drone |
+| 2  | fod                   | drone only                                      |
+| 3  | faded_paint_marking   | RDD2022 D43 / D44 (blurred markings) + drone    |
+| 4  | band_joint            | drone only                                      |
+| 5  | gap_vegetation        | drone only                                      |
+| 6  | aged_surface          | drone only                                      |
+| 7  | repair_patch          | RDD2022 "Repair" + drone                        |
+| 8  | weathered_surface     | drone only                                      |
+| 9  | surface_discoloration | drone only                                      |
+| 10 | paint_marking         | drone only                                      |
+| 11 | faded_surface_marking | drone only                                      |
 
 ## Pipeline
 
