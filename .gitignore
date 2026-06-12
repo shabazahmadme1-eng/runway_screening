@@ -1,0 +1,5 @@
+# Source video and archives — never commit (GitHub size limits)
+*.mp4
+*.MP4
+*.zip
+source/
