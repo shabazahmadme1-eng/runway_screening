@@ -1,0 +1,10 @@
+Runway screening training frames
+================================
+Source video      : DJI_20240131092024_0006_D.MP4
+Video duration    : 54.721 s
+Video native FPS  : 29.970
+Resolution        : 3840x2160 (original, no downscale)
+Extraction FPS    : 5
+JPEG quality      : 90
+Frame count       : 274
+Naming            : frame_000001.jpg .. frame_000274.jpg
