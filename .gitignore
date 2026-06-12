@@ -10,6 +10,7 @@ data/
 datasets/
 raw/
 runs/
+previews/
 *.pt
 *.onnx
 *.engine
