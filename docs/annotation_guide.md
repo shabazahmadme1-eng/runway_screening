@@ -4,6 +4,47 @@ Distilled from the client (Sequetrics) doubts-and-concerns Q&A. Use this
 during the ground-truth refinement pass (CVAT / Roboflow) when reviewing
 pseudo-labels and adding manual boxes.
 
+## Getting the data into the tool
+
+Build an upload package from the frames + current pseudo-labels:
+
+```bash
+# CVAT (YOLO 1.1 import zip)
+python src/export_for_annotation.py --format cvat --zip
+#  -> export/cvat.zip  (~388 MB; git-ignored)
+
+# Roboflow (flat images/ + labels/ + data.yaml)
+python src/export_for_annotation.py --format roboflow
+```
+
+All 274 frames are included — the 16 with no pseudo-boxes still need a human
+pass for the drone-only classes (band_joint, gap_vegetation, aged_surface,
+weathered_surface, surface_discoloration, paint_marking, faded_surface_marking,
+fod), which the RDD2022-trained nano cannot detect.
+
+**CVAT**: create a task → upload the images → Actions → *Upload annotations*
+→ "YOLO 1.1" → the zip. The 12 labels load pre-named from `obj.names`.
+
+**Roboflow**: create a project (Object Detection) → drag the `images/` and
+`labels/` folders in together → it reads `data.yaml` for class names.
+
+After refinement, export YOLO labels back to `data/drone_labels_verified/`
+and re-run the merge with `--drone-labels` (step 4 in the main README) to
+fold them into the master training set.
+
+## Reviewing the pseudo-labels — known failure modes
+
+From the bootstrap pass (RDD2022-trained nano, 1305 boxes / 258 frames):
+
+- **crack (1288 boxes)** — generally on real hairline cracks, but RDD2022
+  fragments long cracks into stacked boxes; merge or leave (training-neutral).
+  Delete boxes that sit on clean asphalt or on the grooved runway texture.
+- **spalling / faded_paint_marking (17 boxes total)** — very sparse; the
+  drone's 1.25 mm GSD top-down view differs hugely from RDD2022 street photos.
+  Expect to add most of these by hand.
+- **the 8 drone-only classes have zero pseudo-labels** — they exist only in
+  the schema; all their boxes come from this manual pass.
+
 ## Ground rules
 
 - **One tag per area.** The client confirmed multi-tagging the same region

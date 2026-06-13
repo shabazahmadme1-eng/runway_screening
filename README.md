@@ -77,7 +77,10 @@ python src/bootstrap_labels.py \
 # 3b. visual sanity check of the pseudo-labels (writes annotated previews)
 python src/preview_labels.py --frames frames --labels pseudo_labels --out previews
 
-# 4. refine in CVAT/Roboflow, export YOLO labels, then re-merge
+# 4. package frames+pseudo-labels for annotation, refine, then re-merge
+python src/export_for_annotation.py --format cvat --zip   # -> export/cvat.zip
+#   ... refine in CVAT/Roboflow (see docs/annotation_guide.md), export to
+#   data/drone_labels_verified/, then:
 python src/merge_datasets.py \
     --drone-frames data/drone_frames \
     --drone-labels data/drone_labels_verified \
