@@ -112,6 +112,26 @@ python src/train.py --model yolov8m.pt --data datasets/master/data.yaml \
     --epochs 150 --imgsz 960 --batch -1 --name runway_m_v1
 ```
 
+### Adding gap_vegetation for free (5-class v1)
+
+Classical CV can auto-label one more class without any manual work —
+`gap_vegetation` (green is chromatically distinct from grey asphalt). The
+other drone-only classes flood on grooved-runway texture; see
+[docs/auto_labeling_findings.md](docs/auto_labeling_findings.md). The
+`drone_labels_v1/` set already combines the silver crack labels with these
+vegetation labels:
+
+```bash
+# (regenerate if needed)
+python src/cv_autolabel.py --frames frames --out cv_labels_green --classes 5 9
+
+# train on RDD2022 + crack + gap_vegetation drone labels
+python src/merge_datasets.py --drone-frames frames \
+    --drone-labels drone_labels_v1 --out datasets/master
+python src/train.py --model yolov8m.pt --data datasets/master/data.yaml \
+    --epochs 150 --imgsz 960 --batch -1 --name runway_m_v1
+```
+
 ## Master dataset layout
 
 ```
