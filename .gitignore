@@ -10,7 +10,7 @@ data/
 datasets/
 raw/
 runs/
-previews/
+previews*/
 export/
 *.pt
 *.onnx

@@ -90,11 +90,33 @@ python src/merge_datasets.py \
 python src/train.py --model yolov8m.pt --data datasets/master/data.yaml --epochs 150 --imgsz 1280 --name runway_m_v1
 ```
 
+### Fast path — v1 model with no manual annotation
+
+To skip the CVAT/Roboflow refinement and train a usable v1 straight away,
+auto-refine the pseudo-labels (precision-tuned re-inference + NMS) and feed
+those "silver" labels into the merge. Only the four RDD-backed classes
+appear (crack, spalling, faded_paint_marking, repair_patch); the eight
+drone-only classes stay undetectable until a human labels them.
+
+```bash
+# auto-refine the conf-0.10 bootstrap labels into clean silver labels
+python src/auto_refine.py --out pseudo_labels_silver --conf 0.40
+
+# merge RDD2022 + the silver drone labels (only the 110 positive frames fold
+# in; the rest are left out rather than trusted as background)
+python src/merge_datasets.py --drone-frames frames \
+    --drone-labels pseudo_labels_silver --out datasets/master
+
+# train YOLOv8m. On 6 GB VRAM use --imgsz 960; for full 1280 use a cloud GPU
+python src/train.py --model yolov8m.pt --data datasets/master/data.yaml \
+    --epochs 150 --imgsz 960 --batch -1 --name runway_m_v1
+```
+
 ## Master dataset layout
 
 ```
 datasets/master/
-├── data.yaml                # YOLO data config (nc=3)
+├── data.yaml                # YOLO data config (nc=12)
 ├── images/{train,val}/      # RDD2022 + verified drone frames
 ├── labels/{train,val}/      # YOLO txt labels
 └── staging/drone_frames/    # unlabelled drone frames awaiting pseudo-labels
