@@ -1,8 +1,14 @@
 # Runway Screening — Edge ML Pipeline (Sequetrics)
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shabazahmadme1-eng/runway_screening/blob/local/nano-bootstrap/colab_train.ipynb)
+
 Custom, edge-deployable YOLOv8 pipeline that detects runway surface
 degradation (cracks, spalling) and Foreign Object Debris (FOD) in
 high-resolution drone imagery (1.25 mm GSD, frames extracted at 5 FPS).
+
+**Train on Colab:** click the badge above (or
+[this link](https://colab.research.google.com/github/shabazahmadme1-eng/runway_screening/blob/local/nano-bootstrap/colab_train.ipynb)),
+set `Runtime → Change runtime type → A100 GPU`, then `Runtime → Run all`.
 
 ## Class schema
 
