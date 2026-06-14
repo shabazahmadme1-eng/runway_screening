@@ -132,6 +132,27 @@ python src/train.py --model yolov8m.pt --data datasets/master/data.yaml \
     --epochs 150 --imgsz 960 --batch -1 --name runway_m_v1
 ```
 
+### Inference, reporting & edge deployment
+
+The trained model is `weights/yolov8m_v1.pt` (150 epochs, YOLOv8m @ 960px,
+peak mAP50 0.693). It detects 5 of the 12 schema classes — crack, spalling,
+faded_paint_marking, repair_patch, gap_vegetation — the rest have no
+training data.
+
+```bash
+# scan every frame -> per-detection + per-frame CSVs + printed inventory
+python src/runway_report.py --weights weights/yolov8m_v1.pt --conf 0.20
+
+# export for the edge (ONNX fp32 ~104 MB; --half for ~52 MB fp16)
+python src/export_edge.py --half
+# build TensorRT *on the Jetson/target*, not here:
+python src/export_edge.py --format engine --half
+
+# standalone inference — onnxruntime only, no ultralytics (edge-ready)
+python src/infer_onnx.py --model weights/yolov8m_v1.onnx \
+    --image frames/frame_000273.jpg --conf 0.25
+```
+
 ## Master dataset layout
 
 ```
