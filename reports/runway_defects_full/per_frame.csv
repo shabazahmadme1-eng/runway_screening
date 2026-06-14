@@ -1,0 +1,275 @@
+frame,n_detections,breakdown
+frame_000001.jpg,3,{'crack': 3}
+frame_000002.jpg,4,{'crack': 4}
+frame_000003.jpg,6,{'crack': 6}
+frame_000004.jpg,6,{'crack': 6}
+frame_000005.jpg,4,{'crack': 4}
+frame_000006.jpg,4,{'crack': 4}
+frame_000007.jpg,5,{'crack': 5}
+frame_000008.jpg,3,{'crack': 3}
+frame_000009.jpg,3,{'crack': 3}
+frame_000010.jpg,3,{'crack': 3}
+frame_000011.jpg,4,{'crack': 4}
+frame_000012.jpg,3,{'crack': 3}
+frame_000013.jpg,3,{'crack': 3}
+frame_000014.jpg,1,{'crack': 1}
+frame_000015.jpg,3,{'crack': 3}
+frame_000016.jpg,3,{'crack': 3}
+frame_000017.jpg,3,{'crack': 3}
+frame_000018.jpg,3,{'crack': 3}
+frame_000019.jpg,4,{'crack': 4}
+frame_000020.jpg,5,{'crack': 5}
+frame_000021.jpg,3,{'crack': 3}
+frame_000022.jpg,2,{'crack': 2}
+frame_000023.jpg,1,{'crack': 1}
+frame_000024.jpg,1,{'crack': 1}
+frame_000025.jpg,2,{'crack': 2}
+frame_000026.jpg,1,{'crack': 1}
+frame_000027.jpg,0,{}
+frame_000028.jpg,2,{'crack': 2}
+frame_000029.jpg,1,{'crack': 1}
+frame_000030.jpg,2,{'crack': 2}
+frame_000031.jpg,1,{'crack': 1}
+frame_000032.jpg,1,{'crack': 1}
+frame_000033.jpg,1,{'crack': 1}
+frame_000034.jpg,1,{'crack': 1}
+frame_000035.jpg,3,{'crack': 3}
+frame_000036.jpg,2,{'crack': 2}
+frame_000037.jpg,1,{'crack': 1}
+frame_000038.jpg,3,{'crack': 3}
+frame_000039.jpg,2,{'crack': 2}
+frame_000040.jpg,3,{'crack': 3}
+frame_000041.jpg,3,{'crack': 3}
+frame_000042.jpg,1,{'crack': 1}
+frame_000043.jpg,1,{'crack': 1}
+frame_000044.jpg,2,{'crack': 2}
+frame_000045.jpg,1,{'crack': 1}
+frame_000046.jpg,1,{'crack': 1}
+frame_000047.jpg,2,{'crack': 2}
+frame_000048.jpg,3,{'crack': 3}
+frame_000049.jpg,1,{'crack': 1}
+frame_000050.jpg,0,{}
+frame_000051.jpg,1,{'crack': 1}
+frame_000052.jpg,1,{'crack': 1}
+frame_000053.jpg,0,{}
+frame_000054.jpg,0,{}
+frame_000055.jpg,1,{'crack': 1}
+frame_000056.jpg,1,{'crack': 1}
+frame_000057.jpg,4,{'crack': 4}
+frame_000058.jpg,4,{'crack': 4}
+frame_000059.jpg,5,{'crack': 5}
+frame_000060.jpg,4,{'crack': 4}
+frame_000061.jpg,4,{'crack': 4}
+frame_000062.jpg,2,{'crack': 2}
+frame_000063.jpg,2,{'crack': 2}
+frame_000064.jpg,3,{'crack': 3}
+frame_000065.jpg,1,{'crack': 1}
+frame_000066.jpg,1,{'crack': 1}
+frame_000067.jpg,1,{'crack': 1}
+frame_000068.jpg,3,{'crack': 3}
+frame_000069.jpg,4,{'crack': 4}
+frame_000070.jpg,3,{'crack': 3}
+frame_000071.jpg,1,{'crack': 1}
+frame_000072.jpg,3,{'crack': 3}
+frame_000073.jpg,3,{'crack': 3}
+frame_000074.jpg,2,{'crack': 2}
+frame_000075.jpg,1,{'crack': 1}
+frame_000076.jpg,1,{'crack': 1}
+frame_000077.jpg,1,{'crack': 1}
+frame_000078.jpg,1,{'crack': 1}
+frame_000079.jpg,1,{'crack': 1}
+frame_000080.jpg,1,{'crack': 1}
+frame_000081.jpg,0,{}
+frame_000082.jpg,2,{'crack': 2}
+frame_000083.jpg,2,{'crack': 2}
+frame_000084.jpg,3,{'crack': 3}
+frame_000085.jpg,2,{'crack': 2}
+frame_000086.jpg,2,{'crack': 2}
+frame_000087.jpg,3,{'crack': 3}
+frame_000088.jpg,2,{'crack': 2}
+frame_000089.jpg,3,{'crack': 3}
+frame_000090.jpg,2,{'crack': 2}
+frame_000091.jpg,2,{'crack': 2}
+frame_000092.jpg,1,{'crack': 1}
+frame_000093.jpg,1,{'crack': 1}
+frame_000094.jpg,2,{'crack': 2}
+frame_000095.jpg,2,{'crack': 2}
+frame_000096.jpg,1,{'crack': 1}
+frame_000097.jpg,1,{'crack': 1}
+frame_000098.jpg,1,{'crack': 1}
+frame_000099.jpg,0,{}
+frame_000100.jpg,0,{}
+frame_000101.jpg,0,{}
+frame_000102.jpg,0,{}
+frame_000103.jpg,0,{}
+frame_000104.jpg,1,{'crack': 1}
+frame_000105.jpg,0,{}
+frame_000106.jpg,0,{}
+frame_000107.jpg,0,{}
+frame_000108.jpg,2,{'crack': 2}
+frame_000109.jpg,1,{'crack': 1}
+frame_000110.jpg,0,{}
+frame_000111.jpg,0,{}
+frame_000112.jpg,0,{}
+frame_000113.jpg,2,{'crack': 2}
+frame_000114.jpg,1,{'crack': 1}
+frame_000115.jpg,2,{'crack': 2}
+frame_000116.jpg,2,{'crack': 2}
+frame_000117.jpg,2,{'crack': 2}
+frame_000118.jpg,3,{'crack': 3}
+frame_000119.jpg,4,{'crack': 4}
+frame_000120.jpg,1,{'crack': 1}
+frame_000121.jpg,4,{'crack': 4}
+frame_000122.jpg,3,{'crack': 3}
+frame_000123.jpg,2,{'crack': 2}
+frame_000124.jpg,2,{'crack': 2}
+frame_000125.jpg,1,{'crack': 1}
+frame_000126.jpg,1,{'crack': 1}
+frame_000127.jpg,1,{'crack': 1}
+frame_000128.jpg,1,{'crack': 1}
+frame_000129.jpg,2,{'crack': 2}
+frame_000130.jpg,2,{'crack': 2}
+frame_000131.jpg,1,{'crack': 1}
+frame_000132.jpg,2,{'crack': 2}
+frame_000133.jpg,3,{'crack': 3}
+frame_000134.jpg,2,{'crack': 2}
+frame_000135.jpg,2,{'crack': 2}
+frame_000136.jpg,1,{'crack': 1}
+frame_000137.jpg,1,{'crack': 1}
+frame_000138.jpg,1,{'crack': 1}
+frame_000139.jpg,0,{}
+frame_000140.jpg,0,{}
+frame_000141.jpg,1,{'crack': 1}
+frame_000142.jpg,1,{'crack': 1}
+frame_000143.jpg,1,{'crack': 1}
+frame_000144.jpg,0,{}
+frame_000145.jpg,0,{}
+frame_000146.jpg,0,{}
+frame_000147.jpg,0,{}
+frame_000148.jpg,3,"{'crack': 1, 'gap_vegetation': 2}"
+frame_000149.jpg,1,{'gap_vegetation': 1}
+frame_000150.jpg,3,"{'gap_vegetation': 2, 'crack': 1}"
+frame_000151.jpg,2,{'gap_vegetation': 2}
+frame_000152.jpg,1,{'gap_vegetation': 1}
+frame_000153.jpg,0,{}
+frame_000154.jpg,1,{'crack': 1}
+frame_000155.jpg,3,"{'crack': 1, 'gap_vegetation': 2}"
+frame_000156.jpg,1,{'gap_vegetation': 1}
+frame_000157.jpg,2,{'gap_vegetation': 2}
+frame_000158.jpg,1,{'gap_vegetation': 1}
+frame_000159.jpg,1,{'gap_vegetation': 1}
+frame_000160.jpg,1,{'crack': 1}
+frame_000161.jpg,1,{'crack': 1}
+frame_000162.jpg,2,{'crack': 2}
+frame_000163.jpg,4,{'crack': 4}
+frame_000164.jpg,1,{'crack': 1}
+frame_000165.jpg,3,{'crack': 3}
+frame_000166.jpg,3,{'crack': 3}
+frame_000167.jpg,4,{'crack': 4}
+frame_000168.jpg,1,{'crack': 1}
+frame_000169.jpg,1,{'crack': 1}
+frame_000170.jpg,0,{}
+frame_000171.jpg,0,{}
+frame_000172.jpg,0,{}
+frame_000173.jpg,0,{}
+frame_000174.jpg,0,{}
+frame_000175.jpg,2,{'crack': 2}
+frame_000176.jpg,1,{'crack': 1}
+frame_000177.jpg,1,{'crack': 1}
+frame_000178.jpg,2,{'crack': 2}
+frame_000179.jpg,1,{'crack': 1}
+frame_000180.jpg,0,{}
+frame_000181.jpg,0,{}
+frame_000182.jpg,4,{'gap_vegetation': 4}
+frame_000183.jpg,7,"{'gap_vegetation': 6, 'crack': 1}"
+frame_000184.jpg,11,"{'gap_vegetation': 10, 'crack': 1}"
+frame_000185.jpg,13,"{'gap_vegetation': 12, 'crack': 1}"
+frame_000186.jpg,16,"{'gap_vegetation': 15, 'crack': 1}"
+frame_000187.jpg,17,{'gap_vegetation': 17}
+frame_000188.jpg,22,"{'gap_vegetation': 21, 'spalling': 1}"
+frame_000189.jpg,18,"{'gap_vegetation': 17, 'crack': 1}"
+frame_000190.jpg,8,{'gap_vegetation': 8}
+frame_000191.jpg,10,"{'gap_vegetation': 9, 'crack': 1}"
+frame_000192.jpg,8,"{'gap_vegetation': 6, 'crack': 2}"
+frame_000193.jpg,3,"{'crack': 2, 'gap_vegetation': 1}"
+frame_000194.jpg,2,{'gap_vegetation': 2}
+frame_000195.jpg,4,"{'gap_vegetation': 3, 'crack': 1}"
+frame_000196.jpg,3,{'gap_vegetation': 3}
+frame_000197.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000198.jpg,3,"{'crack': 1, 'gap_vegetation': 2}"
+frame_000199.jpg,4,"{'crack': 1, 'gap_vegetation': 3}"
+frame_000200.jpg,4,"{'gap_vegetation': 3, 'crack': 1}"
+frame_000201.jpg,1,{'crack': 1}
+frame_000202.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000203.jpg,3,{'crack': 3}
+frame_000204.jpg,0,{}
+frame_000205.jpg,0,{}
+frame_000206.jpg,2,{'crack': 2}
+frame_000207.jpg,1,{'crack': 1}
+frame_000208.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000209.jpg,1,{'crack': 1}
+frame_000210.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000211.jpg,2,{'gap_vegetation': 2}
+frame_000212.jpg,1,{'crack': 1}
+frame_000213.jpg,1,{'gap_vegetation': 1}
+frame_000214.jpg,1,{'gap_vegetation': 1}
+frame_000215.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000216.jpg,1,{'gap_vegetation': 1}
+frame_000217.jpg,5,"{'crack': 2, 'gap_vegetation': 3}"
+frame_000218.jpg,1,{'crack': 1}
+frame_000219.jpg,3,{'gap_vegetation': 3}
+frame_000220.jpg,5,{'gap_vegetation': 5}
+frame_000221.jpg,2,{'gap_vegetation': 2}
+frame_000222.jpg,1,{'gap_vegetation': 1}
+frame_000223.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000224.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000225.jpg,3,"{'crack': 2, 'gap_vegetation': 1}"
+frame_000226.jpg,1,{'crack': 1}
+frame_000227.jpg,1,{'crack': 1}
+frame_000228.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000229.jpg,1,{'gap_vegetation': 1}
+frame_000230.jpg,2,{'gap_vegetation': 2}
+frame_000231.jpg,1,{'gap_vegetation': 1}
+frame_000232.jpg,1,{'gap_vegetation': 1}
+frame_000233.jpg,3,"{'gap_vegetation': 2, 'crack': 1}"
+frame_000234.jpg,4,{'gap_vegetation': 4}
+frame_000235.jpg,1,{'gap_vegetation': 1}
+frame_000236.jpg,2,{'crack': 2}
+frame_000237.jpg,3,"{'crack': 2, 'gap_vegetation': 1}"
+frame_000238.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000239.jpg,2,"{'gap_vegetation': 1, 'crack': 1}"
+frame_000240.jpg,4,"{'gap_vegetation': 2, 'crack': 2}"
+frame_000241.jpg,6,"{'gap_vegetation': 5, 'crack': 1}"
+frame_000242.jpg,1,{'gap_vegetation': 1}
+frame_000243.jpg,2,{'gap_vegetation': 2}
+frame_000244.jpg,2,"{'crack': 1, 'gap_vegetation': 1}"
+frame_000245.jpg,1,{'gap_vegetation': 1}
+frame_000246.jpg,1,{'crack': 1}
+frame_000247.jpg,1,{'crack': 1}
+frame_000248.jpg,2,"{'gap_vegetation': 1, 'crack': 1}"
+frame_000249.jpg,6,"{'gap_vegetation': 5, 'crack': 1}"
+frame_000250.jpg,9,"{'gap_vegetation': 7, 'crack': 2}"
+frame_000251.jpg,7,"{'gap_vegetation': 6, 'crack': 1}"
+frame_000252.jpg,8,"{'gap_vegetation': 7, 'crack': 1}"
+frame_000253.jpg,7,{'gap_vegetation': 7}
+frame_000254.jpg,5,"{'gap_vegetation': 4, 'crack': 1}"
+frame_000255.jpg,5,{'gap_vegetation': 5}
+frame_000256.jpg,5,{'gap_vegetation': 5}
+frame_000257.jpg,7,{'gap_vegetation': 7}
+frame_000258.jpg,6,{'gap_vegetation': 6}
+frame_000259.jpg,5,"{'gap_vegetation': 4, 'crack': 1}"
+frame_000260.jpg,5,"{'gap_vegetation': 4, 'crack': 1}"
+frame_000261.jpg,4,"{'gap_vegetation': 3, 'crack': 1}"
+frame_000262.jpg,5,"{'gap_vegetation': 4, 'crack': 1}"
+frame_000263.jpg,3,"{'gap_vegetation': 2, 'crack': 1}"
+frame_000264.jpg,3,"{'crack': 2, 'gap_vegetation': 1}"
+frame_000265.jpg,4,"{'gap_vegetation': 1, 'crack': 3}"
+frame_000266.jpg,5,"{'crack': 3, 'gap_vegetation': 2}"
+frame_000267.jpg,9,"{'crack': 6, 'gap_vegetation': 3}"
+frame_000268.jpg,7,"{'crack': 4, 'gap_vegetation': 3}"
+frame_000269.jpg,10,"{'gap_vegetation': 6, 'crack': 4}"
+frame_000270.jpg,10,"{'crack': 4, 'gap_vegetation': 6}"
+frame_000271.jpg,11,"{'gap_vegetation': 5, 'crack': 6}"
+frame_000272.jpg,7,"{'crack': 3, 'gap_vegetation': 4}"
+frame_000273.jpg,7,"{'crack': 4, 'gap_vegetation': 3}"
+frame_000274.jpg,7,"{'gap_vegetation': 2, 'crack': 5}"
