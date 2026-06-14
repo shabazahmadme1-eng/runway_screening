@@ -33,6 +33,12 @@ def main():
     p.add_argument("--batch", type=float, default=-1,
                    help="-1 auto-sizes to VRAM; or a fraction like 0.85")
     p.add_argument("--name", default="runway")
+    p.add_argument("--project", default=None,
+                   help="output dir for runs; point at a Drive path on Colab "
+                        "so checkpoints survive a disconnect and --resume works")
+    p.add_argument("--fraction", type=float, default=1.0,
+                   help="fraction of the training set used per epoch; <1 trades "
+                        "a little accuracy for a big speed-up on huge corpora")
     p.add_argument("--device", default=None)
     p.add_argument("--workers", type=int, default=8,
                    help="drop to 4 on <=16 GB RAM to avoid the mosaic-close OOM")
@@ -67,6 +73,8 @@ def main():
         imgsz=args.imgsz,
         batch=args.batch,
         name=args.name,
+        project=args.project,
+        fraction=args.fraction,
         device=args.device,
         workers=args.workers,
         resume=args.resume,

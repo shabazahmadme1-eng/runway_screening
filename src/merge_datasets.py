@@ -108,6 +108,15 @@ def parse_args():
                    help="HighRPD (YOLO txt, top-down 50 m) extracted dir")
     p.add_argument("--fod-a-dir", type=Path, default=None,
                    help="FOD-A (PASCAL VOC) extracted dir; all classes -> fod")
+    # per-source caps — keep one huge single-domain source from dominating the
+    # corpus and blowing up epoch time (FOD-A ships ~30k single-class images)
+    p.add_argument("--max-uav-pdd", type=int, default=None,
+                   help="cap on UAV-PDD2023 images kept (random sample)")
+    p.add_argument("--max-highrpd", type=int, default=None,
+                   help="cap on HighRPD images kept (random sample)")
+    p.add_argument("--max-fod-a", type=int, default=None,
+                   help="cap on FOD-A images kept (random sample); FOD-A is "
+                        "one class, so a few thousand is plenty")
     p.add_argument("--val-fraction", type=float, default=0.2)
     p.add_argument("--keep-negatives", action="store_true",
                    help="keep RDD images whose boxes were all dropped by the "
@@ -231,11 +240,20 @@ def remap_yolo_txt(txt_path: Path, index_map):
 
 
 def add_voc_source(root: Path, class_map, prefix, samples, keep_negatives,
-                   map_all_to=None):
-    """Append a PASCAL-VOC dataset's samples; returns (kept, boxes)."""
+                   map_all_to=None, cap=None):
+    """Append a PASCAL-VOC dataset's samples; returns (kept, boxes).
+
+    cap: if set, randomly sample at most this many (image,xml) pairs before
+    conversion — used to stop a huge source (e.g. FOD-A's ~30k single-class
+    images) from dominating the merged corpus and training time.
+    """
     pairs = collect_img_label_pairs(root, ".xml")
     if not pairs:
         sys.exit(f"No (image,xml) pairs found under {root}")
+    if cap and len(pairs) > cap:
+        random.shuffle(pairs)
+        pairs = pairs[:cap]
+        print(f"[{prefix}] capped to {cap} images (of available pool)")
     kept = boxes = 0
     for img, xml in tqdm(pairs, desc=f"{prefix} VOC->YOLO"):
         lines = voc_to_yolo(xml, class_map, map_all_to)
@@ -248,11 +266,18 @@ def add_voc_source(root: Path, class_map, prefix, samples, keep_negatives,
     return kept, boxes
 
 
-def add_yolo_source(root: Path, index_map, prefix, samples):
-    """Append a YOLO-format dataset's samples; returns (kept, boxes)."""
+def add_yolo_source(root: Path, index_map, prefix, samples, cap=None):
+    """Append a YOLO-format dataset's samples; returns (kept, boxes).
+
+    cap: if set, randomly sample at most this many (image,txt) pairs first.
+    """
     pairs = collect_img_label_pairs(root, ".txt")
     if not pairs:
         sys.exit(f"No (image,txt) pairs found under {root}")
+    if cap and len(pairs) > cap:
+        random.shuffle(pairs)
+        pairs = pairs[:cap]
+        print(f"[{prefix}] capped to {cap} images (of available pool)")
     kept = boxes = 0
     for img, txt in tqdm(pairs, desc=f"{prefix} remap"):
         lines = remap_yolo_txt(txt, index_map)
@@ -308,12 +333,13 @@ def main():
     # ------------------------------------------------ extra transfer sources
     if args.uav_pdd_dir:
         add_voc_source(args.uav_pdd_dir, UAV_PDD_CLASS_MAP, "uavpdd",
-                       samples, args.keep_negatives)
+                       samples, args.keep_negatives, cap=args.max_uav_pdd)
     if args.highrpd_dir:
-        add_yolo_source(args.highrpd_dir, HIGHRPD_INDEX_MAP, "highrpd", samples)
+        add_yolo_source(args.highrpd_dir, HIGHRPD_INDEX_MAP, "highrpd", samples,
+                        cap=args.max_highrpd)
     if args.fod_a_dir:
         add_voc_source(args.fod_a_dir, {}, "foda", samples,
-                       args.keep_negatives, map_all_to=2)
+                       args.keep_negatives, map_all_to=2, cap=args.max_fod_a)
 
     # ---------------------------------------------------------------- drone
     drone_imgs = sorted(p for p in args.drone_frames.rglob("*")
