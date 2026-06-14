@@ -62,6 +62,23 @@ RDD_CLASS_MAP = {
     "Repair": 7,
 }
 
+# UAV-PDD2023 (PASCAL VOC, top-down 30 m). Class names appear both as codes
+# and full words across mirrors, so alias both. crack subtypes -> crack,
+# patching -> repair_patch, pothole -> spalling.
+UAV_PDD_CLASS_MAP = {
+    "LC": 0, "longitudinal crack": 0,
+    "TC": 0, "transverse crack": 0,
+    "AC": 0, "alligator crack": 0,
+    "OC": 0, "oblique crack": 0,
+    "RP": 7, "repair": 7, "patching": 7, "patch": 7,
+    "PH": 1, "pothole": 1,
+}
+
+# HighRPD (YOLO .txt, top-down 50 m). Native indices: 0 line crack,
+# 1 block crack, 2 pothole -> our crack/crack/spalling. Override with
+# --highrpd-map if the shipped order differs.
+HIGHRPD_INDEX_MAP = {0: 0, 1: 0, 2: 1}
+
 IMG_EXTS = {".jpg", ".jpeg", ".png"}
 
 
@@ -84,6 +101,13 @@ def parse_args():
                         "Japan Norway United_States (default: all)")
     p.add_argument("--max-rdd-images", type=int, default=None,
                    help="cap on RDD2022 images kept (random sample)")
+    # extra transfer-learning sources (point at an already-extracted copy)
+    p.add_argument("--uav-pdd-dir", type=Path, default=None,
+                   help="UAV-PDD2023 (PASCAL VOC, top-down 30 m) extracted dir")
+    p.add_argument("--highrpd-dir", type=Path, default=None,
+                   help="HighRPD (YOLO txt, top-down 50 m) extracted dir")
+    p.add_argument("--fod-a-dir", type=Path, default=None,
+                   help="FOD-A (PASCAL VOC) extracted dir; all classes -> fod")
     p.add_argument("--val-fraction", type=float, default=0.2)
     p.add_argument("--keep-negatives", action="store_true",
                    help="keep RDD images whose boxes were all dropped by the "
@@ -109,9 +133,12 @@ def download_rdd(slug: str, dest: Path) -> None:
     api.dataset_download_files(slug, path=str(dest), unzip=True, quiet=False)
 
 
-def voc_to_yolo(xml_path: Path):
+def voc_to_yolo(xml_path: Path, class_map=RDD_CLASS_MAP, map_all_to=None):
     """Parse one VOC XML file -> list of 'cls cx cy w h' lines (normalised).
 
+    class_map: {source class name -> our class id}; matched case-insensitively.
+    map_all_to: if set, every object maps to this class id (used for FOD-A,
+                whose 31 categories all collapse to `fod`).
     Returns None when the file is unparseable or lacks image dimensions.
     """
     try:
@@ -123,9 +150,13 @@ def voc_to_yolo(xml_path: Path):
     if w <= 0 or h <= 0:
         return None
 
+    cmap = {k.lower(): v for k, v in class_map.items()}
     lines = []
     for obj in root.iter("object"):
-        cls = RDD_CLASS_MAP.get((obj.findtext("name") or "").strip())
+        if map_all_to is not None:
+            cls = map_all_to
+        else:
+            cls = cmap.get((obj.findtext("name") or "").strip().lower())
         if cls is None:
             continue
         bb = obj.find("bndbox")
@@ -172,6 +203,68 @@ def collect_rdd_pairs(rdd_dir: Path, countries):
     return pairs
 
 
+def collect_img_label_pairs(root: Path, label_ext: str):
+    """Generic (image, label) pairing by stem for any nested layout."""
+    label_index = {p.stem: p for p in root.rglob(f"*{label_ext}")}
+    pairs = []
+    for img in root.rglob("*"):
+        if img.suffix.lower() not in IMG_EXTS:
+            continue
+        lab = label_index.get(img.stem)
+        if lab is not None:
+            pairs.append((img, lab))
+    return pairs
+
+
+def remap_yolo_txt(txt_path: Path, index_map):
+    """Read a YOLO .txt and remap its class indices; drop unmapped rows."""
+    lines = []
+    for ln in txt_path.read_text().splitlines():
+        parts = ln.split()
+        if len(parts) < 5:
+            continue
+        new = index_map.get(int(parts[0]))
+        if new is None:
+            continue
+        lines.append(" ".join([str(new), *parts[1:5]]))
+    return lines
+
+
+def add_voc_source(root: Path, class_map, prefix, samples, keep_negatives,
+                   map_all_to=None):
+    """Append a PASCAL-VOC dataset's samples; returns (kept, boxes)."""
+    pairs = collect_img_label_pairs(root, ".xml")
+    if not pairs:
+        sys.exit(f"No (image,xml) pairs found under {root}")
+    kept = boxes = 0
+    for img, xml in tqdm(pairs, desc=f"{prefix} VOC->YOLO"):
+        lines = voc_to_yolo(xml, class_map, map_all_to)
+        if lines is None or (not lines and not keep_negatives):
+            continue
+        samples.append((img, lines, f"{prefix}_{img.stem}{img.suffix.lower()}"))
+        kept += 1
+        boxes += len(lines)
+    print(f"[{prefix}] kept {kept} images ({boxes} boxes)")
+    return kept, boxes
+
+
+def add_yolo_source(root: Path, index_map, prefix, samples):
+    """Append a YOLO-format dataset's samples; returns (kept, boxes)."""
+    pairs = collect_img_label_pairs(root, ".txt")
+    if not pairs:
+        sys.exit(f"No (image,txt) pairs found under {root}")
+    kept = boxes = 0
+    for img, txt in tqdm(pairs, desc=f"{prefix} remap"):
+        lines = remap_yolo_txt(txt, index_map)
+        if not lines:
+            continue
+        samples.append((img, lines, f"{prefix}_{img.stem}{img.suffix.lower()}"))
+        kept += 1
+        boxes += len(lines)
+    print(f"[{prefix}] kept {kept} images ({boxes} boxes)")
+    return kept, boxes
+
+
 def safe_copy(src: Path, dst: Path):
     if not dst.exists():
         shutil.copy2(src, dst)
@@ -211,6 +304,16 @@ def main():
         box_count += len(lines)
     print(f"[rdd] kept {kept} images ({box_count} boxes), dropped {dropped} "
           "(unmapped classes / bad XML)")
+
+    # ------------------------------------------------ extra transfer sources
+    if args.uav_pdd_dir:
+        add_voc_source(args.uav_pdd_dir, UAV_PDD_CLASS_MAP, "uavpdd",
+                       samples, args.keep_negatives)
+    if args.highrpd_dir:
+        add_yolo_source(args.highrpd_dir, HIGHRPD_INDEX_MAP, "highrpd", samples)
+    if args.fod_a_dir:
+        add_voc_source(args.fod_a_dir, {}, "foda", samples,
+                       args.keep_negatives, map_all_to=2)
 
     # ---------------------------------------------------------------- drone
     drone_imgs = sorted(p for p in args.drone_frames.rglob("*")

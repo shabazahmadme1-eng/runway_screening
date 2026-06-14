@@ -153,6 +153,34 @@ python src/infer_onnx.py --model weights/yolov8m_v1.onnx \
     --image frames/frame_000273.jpg --conf 0.25
 ```
 
+### Extra transfer-learning datasets (improve crack recall + add FOD)
+
+`merge_datasets.py` can fold in three more public datasets that better match
+the top-down runway domain than street-level RDD2022 (see
+[docs/dataset_research.md](docs/dataset_research.md) for the full evaluation).
+Download/extract each, then point the merge at it:
+
+| dataset | download | view | maps into |
+|---------|----------|------|-----------|
+| UAV-PDD2023 | Zenodo `10.5281/zenodo.8429208` | top-down 30 m | crack, repair_patch, spalling |
+| HighRPD | Mendeley `10.17632/sywswj7djj.1` | top-down 50 m | crack, spalling |
+| FOD-A | github.com/FOD-UNOmaha/FOD-data | runway/taxiway | fod (all 31 → fod) |
+
+```bash
+python src/merge_datasets.py \
+    --drone-frames frames --drone-labels drone_labels_v1 \
+    --uav-pdd-dir data/uav_pdd2023 \
+    --highrpd-dir data/highrpd \
+    --fod-a-dir   data/fod_a \
+    --out datasets/master
+# then train as before (now with crack-rich top-down data + a real fod class)
+python src/train.py --model yolov8m.pt --data datasets/master/data.yaml \
+    --epochs 150 --imgsz 960 --batch -1 --workers 4 --name runway_m_v2
+```
+
+HighRPD ships YOLO indices 0/1/2 = line/block/pothole; override with the
+`HIGHRPD_INDEX_MAP` in the script if a mirror reorders them.
+
 ## Master dataset layout
 
 ```
