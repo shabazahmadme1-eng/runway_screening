@@ -147,3 +147,40 @@ tested in `src/surface_features.py`:
 carry an **ASTM D5340 coverage matrix** — what we assess (cracking, vegetation)
 vs what needs more (FOD, rubber, raveling, marking condition) and why — which
 is honest and shows command of the standard.
+
+## Round 4 — spatial mapping & quality-rescue (the remaining frontier)
+
+The biggest gap between our report and the industry deliverable is a
+**spatial map**. Two enhancements close most of it using only the frames we
+have (no GPS), plus one upgrade that rescues width/PCI:
+
+- **Linear referencing (chainage + offset) — high value, cheap, ADD.**
+  Linear assets are located by station (distance along the runway, e.g.
+  `STA 3+20`) + lateral offset, not "frame_000188".
+  [ESRI LRS](https://www.esri.com/arcgis-blog/products/arcgis-pro/transportation/how-to-choose-between-linear-referencing-and-location-referencing) ·
+  [Iowa DOT LRS](https://iowadot.gov/analytics/linear-referencing-system/introduction).
+  We can derive per-frame advance by registering consecutive frames
+  (phase-correlation / ORB) → pixel shift × GSD → metres/frame → a real
+  chainage for every detection. Self-contained from the frames.
+- **Strip mosaic — feasible, ADD.** Feature-based sequential stitching
+  (ORB/BRISK, ≥70% overlap, stage-based to limit drift) turns the continuous
+  pass into a longitudinal runway strip image to overlay distress on — the
+  map-like visual clients expect.
+  [Real-time sequential mosaicking](https://www.researchgate.net/publication/376210202) ·
+  [Drone mosaicing code](https://github.com/adityajain07/Drone-Images-Mosaicing).
+  Caveat: a single video pass yields a strip, not a full-width orthomosaic
+  (that needs a lawnmower multi-pass survey).
+- **CrackSAM — the width/PCI rescue.** A SAM fine-tuned for cracks
+  (adapter/LoRA) gives thin-crack masks instead of vanilla SAM2's broad
+  regions, which would make real width → ASTM severity → PCI trustworthy.
+  [CrackSAM repo](https://github.com/KG-TSI-Civil/CrackSAM). Needs setup +
+  the fine-tuned weights; bigger lift than the mapping work.
+- **Deblurring (NAFNet/Restormer/DeblurGAN-v2)** — could improve crack
+  measurability, but generic pretrained deblur on drone motion blur is
+  uncertain and can hallucinate detail; treat as an experiment, not a given.
+  [SimDeblur (pretrained checkpoints)](https://github.com/ljzycmd/SimDeblur).
+
+**Recommendation: stop researching, start building.** The space is mapped.
+The highest visible upgrade is the **chainage + strip-mosaic map** (turns the
+report into a spatial deliverable, self-contained); CrackSAM is the deeper
+technical upgrade if true width/PCI is required.
