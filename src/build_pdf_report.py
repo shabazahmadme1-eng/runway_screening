@@ -61,6 +61,42 @@ def img_on(fig, path, rect):
         ax.axis("off")
 
 
+def draw_pipeline(fig, rect):
+    """Draw the detection/analysis pipeline as a labelled flow diagram."""
+    from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+    ax = fig.add_axes(rect)
+    ax.set_xlim(0, 10); ax.set_ylim(0, 6); ax.axis("off")
+
+    def box(x, y, w, h, text, fc):
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.06,rounding_size=0.12",
+                                    linewidth=1, edgecolor="#34495e", facecolor=fc))
+        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center",
+                fontsize=8.2, color=INK, wrap=True)
+
+    def arrow(x1, y1, x2, y2):
+        ax.add_patch(FancyArrowPatch((x1, y1), (x2, y2), arrowstyle="-|>",
+                                     mutation_scale=12, lw=1.2, color="#7f8c8d"))
+
+    # capture
+    box(0.2, 2.5, 1.9, 1.0, "Drone pass\n(video, ~1.25 mm/px)", "#fdebd0")
+    box(2.5, 2.5, 1.7, 1.0, "Frame extraction\n(5 FPS, 274 frames)", "#fdebd0")
+    arrow(2.1, 3.0, 2.5, 3.0)
+    # three parallel analyses
+    box(4.6, 4.4, 2.2, 1.0, "Crack segmentation\n(crack-seg model)", "#f5b7b1")
+    box(4.6, 2.5, 2.2, 1.0, "Vegetation\n(HSV colour)", "#abebc6")
+    box(4.6, 0.6, 2.2, 1.0, "Frame registration\n(chainage / distance)", "#aed6f1")
+    for yy in (4.9, 3.0, 1.1):
+        arrow(4.2, 3.0, 4.6, yy)
+    # measurement
+    box(7.2, 3.4, 2.4, 1.0, "Mask analysis\n(density, length, type)", "#f5b7b1")
+    arrow(6.8, 4.9, 7.2, 4.0)
+    box(7.2, 1.4, 2.4, 1.0, "Aggregate by station\n(hot zones, ASTM matrix)", "#d7dbdd")
+    arrow(6.8, 3.0, 7.2, 2.3); arrow(6.8, 1.1, 7.2, 1.7); arrow(8.4, 3.4, 8.4, 2.4)
+    ax.text(5.0, 5.8, "Detection & analysis pipeline", fontsize=10,
+            fontweight="bold", color=INK)
+
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--reports", type=Path, default=Path("reports/runway_defects_full"))
@@ -106,7 +142,7 @@ def main():
                    f"{args.site}   ·   generated {dt.date.today().isoformat()}")
         kpis = [
             (f"{surveyed:.0f} m", "surveyed length"),
-            (f"{true_density:.2f}%", "crack density (SAM2 true area)"),
+            (f"{true_density:.2f}%", "crack density (segmented area)"),
             (f"{total_len:.0f} m", "total crack length"),
             (f"{n_cracks}", "cracks measured"),
             (f"{crack_frames}/{n_frames}", "crack-bearing frames"),
@@ -118,25 +154,59 @@ def main():
             fig.text(x, y, num, fontsize=20, fontweight="bold", color=ACCENT)
             fig.text(x, y - 0.034, lbl, fontsize=8.3, color=MUTED)
         body = (
-            "Automated surface screening of the runway from a continuous drone "
-            "pass (cracks segmented by a crack-specialised model; vegetation by "
-            "colour). Findings are referenced by chainage (distance along the "
-            "pass) and summarised as crack density and vegetation coverage with "
-            "hot zones to prioritise maintenance, consistent with routine "
-            "pavement monitoring under ICAO Annex 14 / CAA CAP 168 and the ASTM "
-            "D5340 distress framework.\n\n"
-            f"Over {surveyed:.0f} m surveyed the model maps {n_cracks} cracks "
-            f"({total_len:.0f} m total length) across {crack_frames} frames, a "
-            f"true crack density of {true_density:.2f}% of imaged surface, and "
-            f"vegetation in {veg_frames} frames.\n\n"
-            "Scope & limitations: crack density is measured from SAM2 masks "
-            "(relative index for prioritisation/trend). Per-crack WIDTH, ASTM "
-            "severity grading and a numeric PCI are NOT reported — motion blur "
-            "and grooved-runway texture make width unreliable on this survey "
-            "(see Limitations). Precision/recall are not quantified (no "
-            "verified ground truth). FOD, rubber deposits and marking condition "
-            "are out of scope here (see the ASTM coverage matrix).")
-        fig.text(0.08, 0.55, body, fontsize=9.5, color=INK, va="top", wrap=True)
+            f"This report summarises an automated condition survey of the runway, "
+            f"captured in a single drone pass at roughly 1.25 mm per pixel. Cracks "
+            f"are picked out by a crack-specialised segmentation model and "
+            f"vegetation by its colour; every finding is tied to a position along "
+            f"the runway (its chainage) so the results read as a map rather than a "
+            f"list. The aim is to show, at a glance, where the surface needs "
+            f"attention first — in line with the routine pavement-monitoring "
+            f"expectations of ICAO Annex 14, CAA CAP 168 and the ASTM D5340 "
+            f"distress framework.\n\n"
+            f"Across the {surveyed:.0f} m surveyed, the system found {n_cracks} "
+            f"cracks (about {total_len:.0f} m of cracking in total) on "
+            f"{crack_frames} of {n_frames} frames, giving an overall crack density "
+            f"of {true_density:.2f}% of the imaged surface, with vegetation showing "
+            f"in {veg_frames} frames. The pages that follow walk through how the "
+            f"analysis works, where the worst stretches are, and what we can and "
+            f"cannot yet measure.\n\n"
+            f"A note on scope, in the interest of honesty: crack density here is a "
+            f"reliable way to rank and track problem areas, but we deliberately do "
+            f"not publish a per-crack width, an ASTM severity grade or a numeric "
+            f"PCI. Motion blur and the runway's grooved texture make millimetre "
+            f"width measurement untrustworthy on this footage (the Limitations page "
+            f"explains why and how to fix it). Foreign-object debris, rubber "
+            f"deposits and marking condition are out of scope for this survey — the "
+            f"ASTM coverage matrix sets out exactly what was and wasn't assessed.")
+        fig.text(0.08, 0.50, body, fontsize=9.7, color=INK, va="top", wrap=True)
+        finish(pdf, fig, pg)
+
+        # 1b. how it works — architecture + process
+        pg += 1
+        fig = page("How the analysis works",
+                   "From a single drone pass to a located, prioritised survey.")
+        draw_pipeline(fig, [0.06, 0.56, 0.88, 0.34])
+        steps = (
+            "1.  Capture & frames.  The runway is flown in one continuous pass and "
+            "the video is sampled at 5 frames per second, giving 274 high-resolution "
+            "stills at about 1.25 mm per pixel.\n\n"
+            "2.  Crack detection.  Each frame is run through a crack-specialised "
+            "segmentation model that outlines cracks as thin shapes rather than just "
+            "boxes — so we measure the area actually covered by cracking, not the "
+            "rectangle around it.\n\n"
+            "3.  Vegetation.  Greenery (plants growing through joints and along "
+            "edges) is separated from the grey asphalt by colour, which is robust "
+            "and needs no training.\n\n"
+            "4.  Measurement.  From each crack outline we derive its length and "
+            "orientation (longitudinal, transverse or interconnected 'alligator'), "
+            "and per frame we compute crack and vegetation coverage.\n\n"
+            "5.  Location (chainage).  Because the frames are a continuous pass, we "
+            "recover how far the drone moved between frames by aligning them, turning "
+            "frame numbers into real distance along the runway.\n\n"
+            "6.  Reporting.  Findings are aggregated by station into hot zones, "
+            "checked against the ASTM D5340 distress catalogue, and written up as "
+            "this report.")
+        fig.text(0.08, 0.50, steps, fontsize=9.7, color=INK, va="top", wrap=True)
         finish(pdf, fig, pg)
 
         # 2. spatial linear distress map
@@ -159,10 +229,14 @@ def main():
                    "v1 bounding-box proxy vs crack-seg true-area mask.")
         img_on(fig, R / "crack_density_bbox_vs_mask.png", [0.06, 0.48, 0.88, 0.38])
         fig.text(0.08, 0.42,
-                 "Detection bounding boxes overstate crack area; the crack-seg\n"
-                 "masks give the true crack-covered area. Crack-seg is more\n"
-                 "sensitive than v1, tracing finer cracking across the surface.",
-                 fontsize=10, color=INK, va="top", family="monospace")
+                 "A simple bounding box around a crack greatly overstates how much "
+                 "surface the crack actually covers. Outlining the crack instead "
+                 "(the darker band) measures the real affected area. The "
+                 "crack-specialised model is also more sensitive than the original "
+                 "detector, picking up finer cracking right across the surface — so "
+                 "read these density figures as a sensitive screening index rather "
+                 "than an exact inventory.",
+                 fontsize=9.7, color=INK, va="top", wrap=True)
         finish(pdf, fig, pg)
 
         # 4. inventory + vegetation + crack type
@@ -237,28 +311,35 @@ def main():
 
         # 7. limitations
         pg += 1
-        fig = page("Measurement limitations & upgrade path")
+        fig = page("What we can and can't measure (yet)")
         txt = (
-            "Why per-crack width, ASTM severity and PCI are not reported:\n\n"
-            "  - Motion blur and grooved-runway texture (the same challenges\n"
-            "    noted in published runway-crack studies) blur the thin crack\n"
-            "    edge needed for width.\n"
-            "  - Vanilla SAM2 segments a broad region, not the 1-3 px crack\n"
-            "    line, so mask width overstates (~46 mm median — not physical).\n"
-            "  - A dark-line method collapses to a near-constant ~5 mm, i.e. it\n"
-            "    measures the groove/texture scale, not real crack width.\n"
-            "  - The crack-seg model localises cracks well but its masks are\n"
-            "    too coarse (~28-42 mm) for true mm width, even on crops.\n\n"
-            "What IS reliable here: crack density & hot zones (prioritisation),\n"
-            "crack count/location/length, crack type mix, vegetation coverage,\n"
-            "and chainage referencing.\n\n"
-            "Upgrade path to certified-style width + ASTM severity + PCI:\n"
-            "  - capture deblurred / slower (stop-and-stare) imagery, and/or\n"
-            "  - use a crack-fine-tuned segmenter (CrackSAM) instead of vanilla\n"
-            "    SAM2; then width-based severity and PCI become trustworthy.\n\n"
-            "Other notes: precision/recall need human-verified ground truth;\n"
-            "a single video pass yields a strip, not a full-width orthomosaic.")
-        fig.text(0.08, 0.86, txt, fontsize=9.5, color=INK, va="top", family="monospace")
+            "We think it's important to be clear about the edges of this survey.\n\n"
+            "Why there is no per-crack width, ASTM severity grade or PCI score:\n\n"
+            "The honest answer is that this footage cannot support a trustworthy "
+            "millimetre crack width. Motion blur from the moving drone and the "
+            "runway's grooved texture both smear the thin edge of a crack — the very "
+            "thing a width measurement depends on. We tried three different methods "
+            "and each failed in its own way: a general segmentation model traced a "
+            "broad region rather than the crack line (giving an impossible ~46 mm "
+            "'width'); a contrast-based method simply measured the groove spacing "
+            "(~5 mm everywhere); and even the crack-specialised model, while it "
+            "finds cracks well, produces masks too coarse for millimetre width. "
+            "Since width drives ASTM severity and PCI, we don't report those rather "
+            "than publish a number we can't stand behind.\n\n"
+            "What you can rely on in this report: where the cracking is and how it's "
+            "concentrated (density and hot zones), how much there is and how it runs "
+            "(count, location, length and type), vegetation coverage, and the "
+            "distance-along-runway referencing that ties it all to a position.\n\n"
+            "How to unlock certified-style width, severity and PCI next time:\n"
+            "  - capture sharper imagery — slower or stop-and-stare passes, or "
+            "deblurring — so crack edges stay crisp, and/or\n"
+            "  - use a crack-fine-tuned segmenter; then width-based severity and "
+            "PCI become trustworthy.\n\n"
+            "Two smaller caveats: accuracy figures (precision/recall) would need a "
+            "human to verify a sample of frames, and a single straight pass gives a "
+            "strip down the runway rather than a full-width map of the whole "
+            "surface.")
+        fig.text(0.08, 0.86, txt, fontsize=9.7, color=INK, va="top", wrap=True)
         finish(pdf, fig, pg)
 
         # 8. distress list (by chainage)
