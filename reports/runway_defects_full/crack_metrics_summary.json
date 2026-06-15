@@ -1,0 +1,27 @@
+{
+  "n_detections": 408,
+  "n_cracks": 267,
+  "wide_features_excluded": 141,
+  "gsd_mm": 1.25,
+  "max_crack_width_mm_cap": 50.0,
+  "total_crack_length_m": 236.3,
+  "max_crack_width_mm": 96.5,
+  "width_mm_p50": 46.04,
+  "width_mm_p90": 62.12,
+  "severity_counts": {
+    "high": 267
+  },
+  "type_counts": {
+    "longitudinal": 262,
+    "transverse": 5
+  },
+  "fod_risk_cracks": 267,
+  "condition_score_indicative": 67,
+  "condition_class": "Fair",
+  "weighted_density_pct": 3.976,
+  "treatments": {
+    "high/alligator": "Localised full-depth patch / structural investigation; alligator pattern = FOD risk, prioritise",
+    "medium": "Rout and seal to prevent water ingress",
+    "low": "Crack sealing / routine monitoring"
+  }
+}

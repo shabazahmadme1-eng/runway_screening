@@ -80,3 +80,34 @@ The SAM2 crack masks we already produce can be turned into real numbers
 leads with a standards-based PCI + real mm crack measurements rather than a
 proxy density. Confirm the true GSD first (assumed ~1.25 mm/px) so the mm
 conversions are accurate.
+
+## Reality check: per-crack WIDTH / PCI is NOT reliable on this imagery
+
+Implementing Tier 1 exposed a hard limit. Two width methods both fail to give
+trustworthy per-crack width, so ASTM severity grading and a width-based PCI
+are **not defensible** on the current data:
+
+- **SAM2 mask width** over-segments: vanilla SAM2 with a box prompt fills a
+  broad region, not the thin crack line → median "width" 46 mm, every crack
+  flagged "high". Physically impossible (a 46 mm crack is not a crack).
+- **Dark-line (blackhat+Otsu) width** is more plausible (~3.5–5 mm) but
+  collapses to a near-constant 5 mm (median 5.0, p90 5.0) — it's measuring the
+  grooved-texture / motion-blur scale, not real per-crack width variation.
+
+Root causes (both match case study #2's stated challenges): **motion blur**
+and **grooved-runway texture**, plus vanilla SAM2 not being a thin-crack
+segmenter. Inspection of raw crops confirms some genuine cracks (e.g.
+frame_000274) but also many ambiguous blurred/grooved detections.
+
+**Decision:** do not publish width-based severity or a numeric PCI from this
+survey. Report the **defensible** metrics instead:
+- crack **density** (SAM2 area; relative) → hot-zone prioritisation
+- crack **count / locations / hot zones**
+- crack **type mix** (longitudinal vs transverse — geometry is robust)
+- **total crack length** (approximate)
+- an explicit **measurement-limitations** section (blur, groove texture)
+
+**Upgrade path to true width/PCI:** deblurred or slower/stop-and-stare capture
+at the stated ~1.25 mm GSD, and/or a **fine-tuned** crack segmenter
+(CrackSAM-style) rather than vanilla SAM2. Then ASTM D5340 severity + PCI
+become trustworthy.
