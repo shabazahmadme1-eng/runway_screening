@@ -24,3 +24,4 @@ __pycache__/
 # secrets
 kaggle.json
 cv_labels/
+weights/crackseg/

@@ -184,3 +184,30 @@ have (no GPS), plus one upgrade that rescues width/PCI:
 The highest visible upgrade is the **chainage + strip-mosaic map** (turns the
 report into a spatial deliverable, self-contained); CrackSAM is the deeper
 technical upgrade if true width/PCI is required.
+
+## Round 5 — CrackSAM / pretrained crack-seg test (width still blocked)
+
+User asked to try CrackSAM for true crack width. Findings:
+
+- **CrackSAM ([repo](https://github.com/KG-TSI-Civil/CrackSAM)) ships no
+  fine-tuned weights** — training code only. Not a quick plug-in (needs GPU
+  training, like FOD-A).
+- Tested a *pretrained* crack-segmentation model with downloadable weights
+  instead: **OpenSistemas/YOLOv8-crack-seg** (AGPL-3.0).
+  - **Localisation: good** — produces clean thin crack traces on our top-down
+    grooved frames, clearly better than vanilla SAM2's broad regions
+    (`reports/runway_defects_full/crackseg_localization_test.jpg`).
+  - **Width: still unreliable** — median 35–42 mm full-frame, ~28 mm even on
+    upscaled per-crack crops. YOLOv8-seg masks are low-res (160 px prototypes
+    upsampled to 4K), so a thin crack is ~25 px thick from upsampling alone.
+
+**Conclusion (robust across 3 methods):** true per-crack width / ASTM
+severity / PCI is **not achievable off-the-shelf** on this survey — the
+limiter is imagery quality (motion blur + grooves) and mask coarseness, not
+the choice of model. Unlocking it needs **better capture** (deblurred /
+stop-and-stare) and a **crack-trained high-resolution segmenter**.
+
+**Still useful:** the pretrained crack-seg model could replace v1+SAM2 for
+crack *localisation* to make density/length/hot-zone metrics cleaner (AGPL-3.0
+— same licence family as ultralytics, acceptable for our stack). Optional
+quality upgrade; does not change the width conclusion.
