@@ -111,3 +111,39 @@ survey. Report the **defensible** metrics instead:
 at the stated ~1.25 mm GSD, and/or a **fine-tuned** crack segmenter
 (CrackSAM-style) rather than vanilla SAM2. Then ASTM D5340 severity + PCI
 become trustworthy.
+
+## Adding features APART from cracks — what's reliable
+
+Airfield reports cover more than cracks. ASTM D5340's distress catalogue
+(asphalt) groups distresses as load-related (alligator, corrugation, rutting,
+shoving), climate-related (block / joint-reflective / longitudinal /
+transverse cracking, raveling, weathering) and other (bleeding, depression,
+jet-blast erosion, oil spillage, polished aggregate, patching, slippage
+cracking, swell). Vegetation, FOD and rubber deposits are operational/safety
+items, not D5340 distresses.
+[ASTM D5340](https://store.astm.org/d5340-20.html) ·
+[FAA AC 150/5320-17A](https://www.faa.gov/documentLibrary/media/Advisory_Circular/150-5320-17a.pdf)
+
+What is reliably detectable from our RGB top-down imagery (no new training),
+tested in `src/surface_features.py`:
+
+- **Vegetation — RELIABLE, ADD.** Green is colour-separable from grey asphalt.
+  Overall ~0.10% coverage, present in 85/274 frames, concentrated around frames
+  186–190 and 252. Operationally meaningful (plants in joints = water ingress,
+  FOD source, sign of neglect). Reported as coverage % + hot zones, like cracks.
+- **Paint markings — NOT reliable.** White/yellow thresholds catch the bright
+  concrete shoulder/verge and miss faded lines (the real yellow line in
+  frame_000188 isn't caught). Same flooding issue seen earlier. Report as a
+  limitation, not a metric.
+- **FOD** — needs training (no plug-in; FOD-A is dataset-only).
+- **Rubber deposits** — touchdown-zone glossy darkening; detection normally
+  starts from friction/texture data, needs the TDZ location and isn't reliable
+  from single RGB. [SKYbrary: rubber removal](https://skybrary.aero/articles/removal-rubber-runway)
+- **Standing water / ponding** — none in a dry survey; little RGB-only method.
+- **Raveling / weathering / oxidation** — texture/colour; unreliable on
+  motion-blurred grooved RGB.
+
+**Net:** the one solid non-crack add is **vegetation**. The report should also
+carry an **ASTM D5340 coverage matrix** — what we assess (cracking, vegetation)
+vs what needs more (FOD, rubber, raveling, marking condition) and why — which
+is honest and shows command of the standard.
