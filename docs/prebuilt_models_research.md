@@ -84,3 +84,15 @@ a bbox proxy to a real measurement.
 **Bottom line:** the missing classes can't be bought off the shelf for this
 domain. The realistic gains are (a) SAM2 to make cracks *measurably* better,
 (b) classical CV for intact paint, and (c) training FOD ourselves.
+
+## Result: SAM2 wired in (implemented)
+
+`src/crack_segment.py` runs SAM2 (sam2_t, Apache-2.0) on v1's crack boxes and
+recomputes density from true mask area:
+
+- overall **bbox-proxy density 2.40% → SAM2 true-area 0.76%** (boxes overstate
+  by ~3.2×). The hot-zone pattern is preserved; only the magnitude is corrected.
+- Overlays also surfaced that some v1 "cracks" are pavement-edge regions, not
+  thin cracks — a v1 quality note, separate from the density fix.
+- Artifacts: `reports/runway_defects_full/crack_density_sam.csv`,
+  `crack_density_bbox_vs_mask.png`, `overlays/`.
