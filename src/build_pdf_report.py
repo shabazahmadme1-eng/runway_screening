@@ -119,12 +119,12 @@ def main():
             fig.text(x, y - 0.034, lbl, fontsize=8.3, color=MUTED)
         body = (
             "Automated surface screening of the runway from a continuous drone "
-            "pass (custom YOLOv8 detection; crack masks refined with SAM2). "
-            "Findings are referenced by chainage (distance along the pass) and "
-            "summarised as crack density and vegetation coverage with hot zones "
-            "to prioritise maintenance, consistent with routine pavement "
-            "monitoring under ICAO Annex 14 / CAA CAP 168 and the ASTM D5340 "
-            "distress framework.\n\n"
+            "pass (cracks segmented by a crack-specialised model; vegetation by "
+            "colour). Findings are referenced by chainage (distance along the "
+            "pass) and summarised as crack density and vegetation coverage with "
+            "hot zones to prioritise maintenance, consistent with routine "
+            "pavement monitoring under ICAO Annex 14 / CAA CAP 168 and the ASTM "
+            "D5340 distress framework.\n\n"
             f"Over {surveyed:.0f} m surveyed the model maps {n_cracks} cracks "
             f"({total_len:.0f} m total length) across {crack_frames} frames, a "
             f"true crack density of {true_density:.2f}% of imaged surface, and "
@@ -156,12 +156,12 @@ def main():
         # 3. crack density profile (bbox vs SAM)
         pg += 1
         fig = page("Crack density — measurement",
-                   "Bounding-box proxy vs SAM2 true-area mask.")
+                   "v1 bounding-box proxy vs crack-seg true-area mask.")
         img_on(fig, R / "crack_density_bbox_vs_mask.png", [0.06, 0.48, 0.88, 0.38])
         fig.text(0.08, 0.42,
-                 "Bounding boxes overstate crack area ~3x; SAM2 masks give the\n"
-                 "true crack-covered area. Both preserve the same hot-zone\n"
-                 "pattern — only the magnitude is corrected.",
+                 "Detection bounding boxes overstate crack area; the crack-seg\n"
+                 "masks give the true crack-covered area. Crack-seg is more\n"
+                 "sensitive than v1, tracing finer cracking across the surface.",
                  fontsize=10, color=INK, va="top", family="monospace")
         finish(pdf, fig, pg)
 
@@ -221,8 +221,8 @@ def main():
         if gallery:
             for i in range(0, len(gallery), 2):
                 pg += 1
-                fig = page("Crack hot zones — SAM2 masks",
-                           "red = crack mask · yellow = detection box")
+                fig = page("Crack hot zones — crack-seg masks",
+                           "red = segmented crack")
                 for slot, (fname, dv) in enumerate(gallery[i:i + 2]):
                     p = odir / fname
                     im = cv2.imread(str(p)) if p.exists() else cv2.imread(str(args.frames / fname))
@@ -246,7 +246,9 @@ def main():
             "  - Vanilla SAM2 segments a broad region, not the 1-3 px crack\n"
             "    line, so mask width overstates (~46 mm median — not physical).\n"
             "  - A dark-line method collapses to a near-constant ~5 mm, i.e. it\n"
-            "    measures the groove/texture scale, not real crack width.\n\n"
+            "    measures the groove/texture scale, not real crack width.\n"
+            "  - The crack-seg model localises cracks well but its masks are\n"
+            "    too coarse (~28-42 mm) for true mm width, even on crops.\n\n"
             "What IS reliable here: crack density & hot zones (prioritisation),\n"
             "crack count/location/length, crack type mix, vegetation coverage,\n"
             "and chainage referencing.\n\n"
