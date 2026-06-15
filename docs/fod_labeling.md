@@ -1,8 +1,7 @@
 # Adding the FOD class (the safety-critical one)
 
 FOD (Foreign Object Debris) has no training data and can't be auto-labelled
-on this texture (the CV anomaly detector floods on aggregate/shadows). It
-needs a small human pass — but you don't have to label all 274 frames.
+on this texture (the CV anomaly detector floods on aggregate/shadows). 
 
 ## 1. Label a focused shortlist (~40 frames, ~1 hour)
 
