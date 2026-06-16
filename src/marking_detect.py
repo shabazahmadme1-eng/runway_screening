@@ -16,8 +16,8 @@ def detect_markings(im):
 
     # bright paint: white (low saturation AND much brighter than grey asphalt)
     # OR warm yellow (saturated hue, which grey asphalt never is)
-    white = cv2.inRange(hsv, (0, 0, 200), (180, 45, 255))
-    yellow = cv2.inRange(hsv, (14, 28, 135), (42, 255, 255))
+    white = cv2.inRange(hsv, (0, 0, 195), (180, 48, 255))
+    yellow = cv2.inRange(hsv, (12, 22, 120), (45, 255, 255))
     paint = cv2.bitwise_or(white, yellow)
 
     # Dried grass and faded cream paint share almost the same hue, so a plain
@@ -35,27 +35,34 @@ def detect_markings(im):
 
     paint = cv2.morphologyEx(paint, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     # bridge dash gaps so a broken line reads as one component
-    paint = cv2.morphologyEx(paint, cv2.MORPH_CLOSE, np.ones((15, 15), np.uint8))
+    paint = cv2.morphologyEx(paint, cv2.MORPH_CLOSE, np.ones((13, 13), np.uint8))
 
-    # markings are long AND have real width; grooves are hairline-thin, grass is
+    # markings are long, elongated lines; grooves are hairline-thin and grass is
     # blobby — keep long, elongated, non-hairline components
     out = np.zeros_like(paint)
     cnts, _ = cv2.findContours(paint, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for c in cnts:
-        if cv2.contourArea(c) < 100:
+        if cv2.contourArea(c) < 90:
             continue
         (w, h) = cv2.minAreaRect(c)[1]
         lo, hi = min(w, h), max(w, h)
         if lo < 1:
             continue
-        if hi / lo >= 3.0 and hi >= 55 and lo >= 5:
+        if hi / lo >= 2.5 and hi >= 50 and lo >= 5:
             cv2.drawContours(out, [c], -1, 1, -1)
+
+    # the bright concrete shoulder and verge hug the image margin; markings of
+    # interest sit on the runway interior, so ignore a thin border
+    H, W = out.shape
+    bx, by = int(0.05 * W), int(0.03 * H)
+    out[:by] = 0; out[-by:] = 0; out[:, :bx] = 0; out[:, -bx:] = 0
     return out > 0
 
 
 def _test():
     tiles = []
-    for f in ["frame_000188.jpg", "frame_000006.jpg", "frame_000001.jpg"]:
+    for f in ["frame_000188.jpg", "frame_000006.jpg", "frame_000001.jpg",
+              "frame_000120.jpg"]:
         im = cv2.imread(f"frames/{f}")
         m = detect_markings(im)
         ov = im.copy(); ov[m] = (255, 0, 255)

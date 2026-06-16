@@ -258,10 +258,11 @@ def main():
         "rather than the green verge, and it runs as a long thin line rather than "
         "a blob. With those three conditions together the white centre line and "
         "the brighter cream lines are traced cleanly and the grass is left alone "
-        f"(Figure 4); markings register in {mark_frames} frames. The case that "
-        "remains hard is badly faded paint, which by then is barely brighter than "
-        "the surface beneath it — so we read this track as a dependable locator of "
-        "intact markings and a weaker guide to worn ones.")
+        f"(Figure 4); markings register in {mark_frames} frames. Two cases stay "
+        "hard: very faded paint, by then barely brighter than the surface beneath "
+        "it, and the bright concrete shoulder at the runway margin, itself a long "
+        "pale line — so we read this track as a dependable locator of intact "
+        "interior markings and a weaker guide to worn ones.")
 
     p.heading("5.  Spatial referencing")
     p.figure(R / "runway_linear_map.png",
