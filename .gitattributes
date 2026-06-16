@@ -1,0 +1,11 @@
+# Keep GitHub's language bar focused on the actual source code (Python).
+# The generated HTML/PDF reports and the image/label data artifacts are not
+# source — exclude them from language stats (and collapse them in diffs).
+reports/**           linguist-generated
+annotated/**         linguist-generated
+frames/**            linguist-generated
+drone_labels_v1/**   linguist-generated
+pseudo_labels/**     linguist-generated
+pseudo_labels_silver/** linguist-generated
+cv_labels_green/**   linguist-generated
+*.ipynb              linguist-documentation
