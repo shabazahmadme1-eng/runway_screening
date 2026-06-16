@@ -67,12 +67,13 @@ def vegetation_figure():
 
 
 def marking_figure():
+    from marking_detect import detect_markings
     src = cv2.imread("frames/frame_000188.jpg")
-    m = hsv_mask(src, *WHITE) | hsv_mask(src, *YELLOW)
+    m = detect_markings(src)
     ov = src.copy(); ov[m] = (255, 0, 255)
     ov = cv2.addWeighted(src, 0.45, ov, 0.55, 0)
     a, _ = panel(src); a = label(a, "(a) source frame")
-    b, _ = panel(ov);  b = label(b, "(b) painted markings (magenta = bright paint)")
+    b, _ = panel(ov);  b = label(b, "(b) painted markings (magenta) — verge grass ignored")
     side_by_side(a, b, "fig_marking.png")
 
 

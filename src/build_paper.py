@@ -245,20 +245,23 @@ def main():
 
     p.heading("4.3  Painted markings", 11)
     p.figure(FIG / "fig_marking.png",
-             "Figure 4. Bright paint is isolated by colour (magenta). Intact "
-             "white and yellow lines are caught well, but the same rule also "
-             "responds to the bright concrete shoulder on the right — a limitation "
-             "discussed below.", max_h=0.12)
+             "Figure 4. Painted lines are picked out by brightness and linear "
+             "shape, not colour alone. The cream line on the asphalt is traced "
+             "(magenta) while the grass on the verge — which shares almost the "
+             "same hue — is correctly left out.", max_h=0.12)
     p.para(
-        "The third track looks for painted markings by the same colour logic, "
-        "keying on bright white and yellow (Figure 4). Intact lines are caught "
-        "cleanly. The method is, however, the least dependable of the three: the "
-        "bright concrete shoulder and verge satisfy the same brightness rule and "
-        "are picked up alongside the paint, and faded markings — which are the "
-        "ones an inspector most wants flagged — are missed because they are no "
-        f"longer bright. Markings register in {mark_frames} frames, but we treat "
-        "this track as indicative of where paint is present rather than as a "
-        "measure of its condition.")
+        "Markings are the subtlest of the three, and colour on its own is "
+        "misleading: sunlit and dried grass take on almost the same warm hue as "
+        "faded cream paint, so a plain colour rule flags the verge instead of the "
+        "line. The track therefore keys on what genuinely sets a marking apart — "
+        "it is brighter than the asphalt around it, it sits on the grey surface "
+        "rather than the green verge, and it runs as a long thin line rather than "
+        "a blob. With those three conditions together the white centre line and "
+        "the brighter cream lines are traced cleanly and the grass is left alone "
+        f"(Figure 4); markings register in {mark_frames} frames. The case that "
+        "remains hard is badly faded paint, which by then is barely brighter than "
+        "the surface beneath it — so we read this track as a dependable locator of "
+        "intact markings and a weaker guide to worn ones.")
 
     p.heading("5.  Spatial referencing")
     p.figure(R / "runway_linear_map.png",

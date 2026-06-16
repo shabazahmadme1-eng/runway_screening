@@ -17,6 +17,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from marking_detect import detect_markings
+
 IMG_EXTS = {".jpg", ".jpeg", ".png"}
 GREEN = ((40, 30, 25), (95, 255, 255))            # vegetation
 WHITE = ((0, 0, 225), (180, 28, 255))             # white markings
@@ -48,7 +50,7 @@ def main():
         area = float(H * W)
         hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
         veg = coverage(hsv, *GREEN)
-        mark = cv2.bitwise_or(coverage(hsv, *WHITE), coverage(hsv, *YELLOW))
+        mark = detect_markings(im)        # line-based: paint, not grass
         vp = 100 * (veg > 0).sum() / area
         mp = 100 * (mark > 0).sum() / area
         rows.append([f.name, round(vp, 4), round(mp, 4)])
