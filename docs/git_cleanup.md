@@ -1,45 +1,33 @@
-# Finishing the git cleanup (run locally)
+# Final git cleanup — two leftover branches
 
-The work was consolidated onto `main` from the cloud environment, but two
-steps could not be done there because the environment's git proxy rejects
-(a) branch deletions and (b) the large single push that a history rewrite
-needs (HTTP 413 — it only accepts small incremental deltas). Run the
-following from a normal local clone with full GitHub access.
+**Status:** `main` is fully clean. All 47 commits on `main` (the default
+branch) are authored *and* committed by Shabaz Ahmad Hasib, with every
+`Co-Authored-By: Claude`, `claude.ai/code` URL and Claude committer removed.
+GitHub builds its **contributor list from the default branch**, so Claude no
+longer appears there. (The graph can take a little while / a page refresh to
+recompute.)
 
-## 1. Remove "Claude" from old commit history + squash
+**Remaining:** two old branches still exist on the remote and still contain
+the original Claude-tagged commits in *their* history. They do **not** affect
+the contributor list, but to erase every last trace, delete them. This cloud
+environment's git server refuses branch deletion, so do it from the GitHub UI
+or a normal local clone:
 
-```bash
-pip install git-filter-repo
-git clone https://github.com/shabazahmadme1-eng/runway_screening.git
-cd runway_screening
+- `local/nano-bootstrap`
+- `claude/focused-ramanujan-pulfzw`
 
-# scrub author/committer + Claude lines from every commit message (all branches)
-git filter-repo --force \
-  --name-callback  'return b"Shabaz Ahmad Hasib"' \
-  --email-callback 'return b"shabazahmad.me1@gmail.com"' \
-  --message-callback '
-lines = [l for l in message.split(b"\n")
-         if b"claude" not in l.lower() and b"co-authored-by" not in l.lower()]
-return b"\n".join(lines)'
+## GitHub UI (fastest)
 
-# (optional) squash main into a handful of logical commits
-git checkout main
-git rebase -i --root        # mark groups as "squash"/"fixup" in the editor
+1. Repo → **Branches** (`/branches`).
+2. Click the trash icon next to `local/nano-bootstrap` and
+   `claude/focused-ramanujan-pulfzw`.
+   (`main` is already the default, so deletion is allowed.)
 
-# filter-repo drops the remote for safety — re-add and force-push
-git remote add origin https://github.com/shabazahmadme1-eng/runway_screening.git
-git push -f origin main
-```
-
-## 2. Make main the default and delete the leftover branches
+## …or from a local clone
 
 ```bash
-gh repo edit shabazahmadme1-eng/runway_screening --default-branch main
 git push origin --delete local/nano-bootstrap
 git push origin --delete claude/focused-ramanujan-pulfzw
 ```
 
-(Or in the GitHub UI: Settings → Branches → set default to `main`, then the
-Branches page → delete `local/nano-bootstrap` and `claude/…`.)
-
-After this, the repo is a single clean `main` with no "Claude" anywhere.
+After that, the repository is a single clean `main` with no "Claude" anywhere.
